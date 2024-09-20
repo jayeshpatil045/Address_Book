@@ -1,12 +1,10 @@
 '''
-
 @Author: Jayesh Patil
 @Date: 2024-09-19
 @Last Modified by: Jayesh Patil
 @Title: Address Book Problem
-
-
 '''
+
 import logger
 from regex_validation import *
 
@@ -84,6 +82,37 @@ class AddressBook:
         self.contacts.append(contact)
         logger.info(f"Added new contact: {contact.first_name} {contact.last_name}")
 
+    def edit_contact_by_name(self, first_name, last_name):
+        """
+        Description:
+            Edits an existing contact's details based on the provided first and last name.
+
+        Parameters:
+            first_name (str): First name of the contact to edit.
+            last_name (str): Last name of the contact to edit.
+
+        Returns:
+            None
+        """
+        for contact in self.contacts:
+            if contact.first_name == first_name and contact.last_name == last_name:
+                logger.info(f"Editing contact: {contact.first_name} {contact.last_name}")
+
+                contact.first_name = input_validation("Enter new First Name", contact.first_name, validate_first_name)
+                contact.last_name = input_validation("Enter new Last Name", contact.last_name, validate_last_name)
+                contact.address = input_validation("Enter new Address", contact.address, validate_address)
+                contact.city = input_validation("Enter new City", contact.city, validate_city)
+                contact.state = input_validation("Enter new State", contact.state, validate_state)
+                contact.zip_code = input_validation("Enter new ZIP Code", contact.zip_code, validate_zip_code)
+                contact.phone_number = input_validation("Enter new Phone Number", contact.phone_number, validate_phone_number)
+                contact.email = input_validation("Enter new Email", contact.email, validate_email)
+
+                logger.info(f"Updated contact: {contact.first_name} {contact.last_name}")
+                return
+
+        logger.error(f"No contact found with the name {first_name} {last_name}")
+        print(f"No contact found with the name {first_name} {last_name}")
+
     def view_contacts(self):
         """
         Description:
@@ -97,16 +126,44 @@ class AddressBook:
         """
         if not self.contacts:
             logger.info("No contacts to display")
+            print("No contacts available.")
         else:
             for contact in self.contacts:
-                logger.info(f"Contact: {contact}")
+                print(contact)
+                logger.info(f"Contact displayed: {contact.first_name} {contact.last_name}")
+
+
+def input_validation(prompt, current_value, validation_function):
+    """
+    Description:
+        Prompts the user for input and validates it using the provided validation function.
+        If the user inputs nothing, the current value is retained.
+
+    Parameters:
+        prompt (str): The prompt message to display to the user.
+        current_value (str): The current value of the field.
+        validation_function (function): The function used to validate the user's input.
+
+    Returns:
+        str: The validated input from the user or the current value if no input is given.
+    """
+    while True:
+        new_value = input(f"{prompt} [{current_value}]: ")
+        if new_value:
+            if validation_function(new_value):
+                return new_value
+            else:
+                logger.warning(f"Invalid input for {prompt}: {new_value}")
+        else:
+            return current_value
 
 
 def main():
     """
     Description:
         Main function that provides a menu-driven interface for the user to add contacts,
-        view all contacts, or exit the program. It also validates user inputs for each field.
+        edit existing contacts, view all contacts, or exit the program.
+        It also validates user inputs for each field.
 
     Parameters:
         None
@@ -117,7 +174,7 @@ def main():
     address_book = AddressBook()
 
     while True:
-        logger.info("\n1. Add Contact\n2. View Contacts\n3. Exit")
+        logger.info("\n1. Add Contact\n2. Edit Contact\n3. View Contacts\n4. Exit")
         choice = input("Enter your choice: ")
 
         if choice == "1":
@@ -165,10 +222,14 @@ def main():
             address_book.add_contact(contact)
 
         elif choice == "2":
-            logger.info("User chose to view contacts")
-            address_book.view_contacts()
+            first_name = input("Enter First Name of the contact to edit: ")
+            last_name = input("Enter Last Name of the contact to edit: ")
+            address_book.edit_contact_by_name(first_name, last_name)
 
         elif choice == "3":
+            address_book.view_contacts()
+
+        elif choice == "4":
             logger.info("Program exited by the user")
             break
 
