@@ -68,20 +68,44 @@ class AddressBook:
         """
         self.name = name
         self.contacts = []
+        
+    def is_duplicate(self, first_name, last_name):
+        """
+        Description:
+            Checks if a contact with the same first name and last name already exists in the Address Book.
+
+        Parameters:
+            first_name (str): The first name of the contact to check.
+            last_name (str): The last name of the contact to check.
+
+        Returns:
+            bool: True if a duplicate exists, False otherwise.
+        """
+        for contact in self.contacts:
+            if contact.first_name == first_name and contact.last_name == last_name:
+                return True
+        return False
 
     def add_contact(self, contact):
         """
         Description:
-            Adds a new Contact object to the Address Book.
+            Adds a new Contact object to the address book after checking for duplicates.
+            If a contact with the same name already exists, it prevents the addition.
 
         Parameters:
-            contact (Contact): The Contact object to be added.
+            contact (Contact): The Contact object to be added to the address book.
 
         Returns:
             None
         """
-        self.contacts.append(contact)
-        logger.info(f"Added new contact: {contact.first_name} {contact.last_name} to Address Book: {self.name}")
+        if self.is_duplicate(contact.first_name, contact.last_name):
+            logger.warning(f"Duplicate contact found: {contact.first_name} {contact.last_name}")
+            print(f"Contact '{contact.first_name} {contact.last_name}' already exists in the Address Book.")
+        else:
+            self.contacts.append(contact)
+            logger.info(f"Added new contact: {contact.first_name} {contact.last_name}")
+            print(f"Contact '{contact.first_name} {contact.last_name}' added successfully.")
+
 
     def edit_contact_by_name(self, first_name, last_name):
         """
