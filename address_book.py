@@ -113,6 +113,26 @@ class AddressBook:
         logger.error(f"No contact found with the name {first_name} {last_name}")
         print(f"No contact found with the name {first_name} {last_name}")
 
+    def delete_contact_by_name(self,first_name,last_name):
+        """
+        Description:
+            Deletes a contact from the address book based on the provided first name and last name.
+            If the contact is found, it is removed from the contact list.
+
+        Parameters:
+            first_name (str): The first name of the contact to be deleted.
+            last_name (str): The last name of the contact to be deleted.
+
+        Returns:
+            None
+        """        
+        for Contact in self.contacts:
+            if Contact.first_name == first_name and Contact.last_name == last_name:
+                self.contacts.remove(Contact)
+                logger.info(f"Deleted contact: {contact.first_name} {contact.last_name}")  
+                return
+        logger.error(f"No contact found with the name {first_name} {last_name}")           
+
     def view_contacts(self):
         """
         Description:
@@ -174,8 +194,8 @@ def main():
     address_book = AddressBook()
 
     while True:
-        logger.info("\n1. Add Contact\n2. Edit Contact\n3. View Contacts\n4. Exit")
-        choice = input("Enter your choice: ")
+        logger.info("\n1. Add Contact\n2. Edit Contact\n3. View Contacts\n4. Delete Contact\n5. Exit")
+        choice = input("Enter your choice Between (1 - 5) : ")
 
         if choice == "1":
             first_name = input("Enter First Name: ")
@@ -228,8 +248,13 @@ def main():
 
         elif choice == "3":
             address_book.view_contacts()
-
+             
         elif choice == "4":
+            first_name = input("Enter First Name of the contact to delete: ")
+            last_name = input("Enter Last Name of the contact to delete: ")            
+            address_book.delete_contact_by_name(first_name,last_name)
+
+        elif choice == "5":
             logger.info("Program exited by the user")
             break
 
