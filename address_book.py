@@ -11,8 +11,26 @@ import logger
 from regex_validation import *
 
 logger = logger.logger_init('Address Book')
+
 class Contact:
     def __init__(self, first_name, last_name, address, city, state, zip_code, phone_number, email):
+        """
+        Description:
+            Initializes a Contact object with the provided details.
+
+        Parameters:
+            first_name (str): First name of the contact.
+            last_name (str): Last name of the contact.
+            address (str): Address of the contact.
+            city (str): City where the contact resides.
+            state (str): State where the contact resides.
+            zip_code (str): ZIP code of the contact's location.
+            phone_number (str): Contact's phone number.
+            email (str): Contact's email address.
+
+        Returns:
+            None
+        """
         self.first_name = first_name
         self.last_name = last_name
         self.address = address
@@ -23,6 +41,16 @@ class Contact:
         self.email = email
 
     def __str__(self):
+        """
+        Description:
+            Provides a string representation of the Contact object.
+
+        Parameters:
+            None
+
+        Returns:
+            str: A formatted string that contains the contact's details.
+        """
         return (f"Name: {self.first_name} {self.last_name}\n"
                 f"Address: {self.address}, {self.city}, {self.state} {self.zip_code}\n"
                 f"Phone: {self.phone_number}\nEmail: {self.email}\n")
@@ -30,13 +58,43 @@ class Contact:
 
 class AddressBook:
     def __init__(self):
+        """
+        Description:
+            Initializes an empty AddressBook with no contacts.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+        """
         self.contacts = []
 
     def add_contact(self, contact):
+        """
+        Description:
+            Adds a new Contact object to the address book.
+
+        Parameters:
+            contact (Contact): The Contact object to be added to the address book.
+
+        Returns:
+            None
+        """
         self.contacts.append(contact)
         logger.info(f"Added new contact: {contact.first_name} {contact.last_name}")
 
     def view_contacts(self):
+        """
+        Description:
+            Displays all contacts in the address book.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+        """
         if not self.contacts:
             logger.info("No contacts to display")
         else:
@@ -45,6 +103,17 @@ class AddressBook:
 
 
 def main():
+    """
+    Description:
+        Main function that provides a menu-driven interface for the user to add contacts,
+        view all contacts, or exit the program. It also validates user inputs for each field.
+
+    Parameters:
+        None
+
+    Returns:
+        None
+    """
     address_book = AddressBook()
 
     while True:
