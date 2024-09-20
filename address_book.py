@@ -2,20 +2,20 @@
 @Author: Jayesh Patil
 @Date: 2024-09-19
 @Last Modified by: Jayesh Patil
-@Title: Address Book Problem
+@Title: Address Book Problem 
 '''
 
 import logger
 from regex_validation import *
 
-logger = logger.logger_init('Address Book')
+logger = logger.logger_init('Address Book Probelm')
 
 class Contact:
     def __init__(self, first_name, last_name, address, city, state, zip_code, phone_number, email):
         """
         Description:
             Initializes a Contact object with the provided details.
-
+        
         Parameters:
             first_name (str): First name of the contact.
             last_name (str): Last name of the contact.
@@ -25,7 +25,7 @@ class Contact:
             zip_code (str): ZIP code of the contact's location.
             phone_number (str): Contact's phone number.
             email (str): Contact's email address.
-
+        
         Returns:
             None
         """
@@ -45,7 +45,7 @@ class Contact:
 
         Parameters:
             None
-
+        
         Returns:
             str: A formatted string that contains the contact's details.
         """
@@ -55,32 +55,33 @@ class Contact:
 
 
 class AddressBook:
-    def __init__(self):
+    def __init__(self, name):
         """
         Description:
-            Initializes an empty AddressBook with no contacts.
+            Initializes an AddressBook object with a unique name and an empty contact list.
 
         Parameters:
-            None
+            name (str): The name of the Address Book.
 
         Returns:
             None
         """
+        self.name = name
         self.contacts = []
 
     def add_contact(self, contact):
         """
         Description:
-            Adds a new Contact object to the address book.
+            Adds a new Contact object to the Address Book.
 
         Parameters:
-            contact (Contact): The Contact object to be added to the address book.
+            contact (Contact): The Contact object to be added.
 
         Returns:
             None
         """
         self.contacts.append(contact)
-        logger.info(f"Added new contact: {contact.first_name} {contact.last_name}")
+        logger.info(f"Added new contact: {contact.first_name} {contact.last_name} to Address Book: {self.name}")
 
     def edit_contact_by_name(self, first_name, last_name):
         """
@@ -88,15 +89,15 @@ class AddressBook:
             Edits an existing contact's details based on the provided first and last name.
 
         Parameters:
-            first_name (str): First name of the contact to edit.
-            last_name (str): Last name of the contact to edit.
+            first_name (str): The first name of the contact to be edited.
+            last_name (str): The last name of the contact to be edited.
 
         Returns:
             None
         """
         for contact in self.contacts:
             if contact.first_name == first_name and contact.last_name == last_name:
-                logger.info(f"Editing contact: {contact.first_name} {contact.last_name}")
+                logger.info(f"Editing contact: {contact.first_name} {contact.last_name} in Address Book: {self.name}")
 
                 contact.first_name = input_validation("Enter new First Name", contact.first_name, validate_first_name)
                 contact.last_name = input_validation("Enter new Last Name", contact.last_name, validate_last_name)
@@ -110,14 +111,13 @@ class AddressBook:
                 logger.info(f"Updated contact: {contact.first_name} {contact.last_name}")
                 return
 
-        logger.error(f"No contact found with the name {first_name} {last_name}")
+        logger.error(f"No contact found with the name {first_name} {last_name} in Address Book: {self.name}")
         print(f"No contact found with the name {first_name} {last_name}")
 
-    def delete_contact_by_name(self,first_name,last_name):
+    def delete_contact_by_name(self, first_name, last_name):
         """
         Description:
-            Deletes a contact from the address book based on the provided first name and last name.
-            If the contact is found, it is removed from the contact list.
+            Deletes a contact from the Address Book based on the provided first and last name.
 
         Parameters:
             first_name (str): The first name of the contact to be deleted.
@@ -125,18 +125,18 @@ class AddressBook:
 
         Returns:
             None
-        """        
-        for Contact in self.contacts:
-            if Contact.first_name == first_name and Contact.last_name == last_name:
-                self.contacts.remove(Contact)
-                logger.info(f"Deleted contact: {contact.first_name} {contact.last_name}")  
+        """
+        for contact in self.contacts:
+            if contact.first_name == first_name and contact.last_name == last_name:
+                self.contacts.remove(contact)
+                logger.info(f"Deleted contact: {contact.first_name} {contact.last_name} from Address Book: {self.name}")
                 return
-        logger.error(f"No contact found with the name {first_name} {last_name}")           
+        logger.error(f"No contact found with the name {first_name} {last_name} in Address Book: {self.name}")
 
     def view_contacts(self):
         """
         Description:
-            Displays all contacts in the address book.
+            Displays all contacts in the Address Book.
 
         Parameters:
             None
@@ -145,12 +145,58 @@ class AddressBook:
             None
         """
         if not self.contacts:
-            logger.info("No contacts to display")
-            print("No contacts available.")
+            logger.info(f"No contacts to display in Address Book: {self.name}")
+            print(f"No contacts available in Address Book: {self.name}.")
         else:
             for contact in self.contacts:
                 print(contact)
-                logger.info(f"Contact displayed: {contact.first_name} {contact.last_name}")
+                logger.info(f"Displayed contact: {contact.first_name} {contact.last_name} from Address Book: {self.name}")
+
+
+class AddressBookSystem:
+    def __init__(self):
+        """
+        Description:
+            Initializes the AddressBookSystem with an empty dictionary to store multiple Address Books.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+        """
+        self.address_books = {}
+
+    def add_address_book(self, book_name):
+        """
+        Description:
+            Adds a new Address Book to the system with a unique name.
+
+        Parameters:
+            book_name (str): The name of the Address Book to be added.
+
+        Returns:
+            None
+        """
+        if book_name in self.address_books:
+            logger.error(f"Address Book with the name '{book_name}' already exists.")
+            print(f"Address Book '{book_name}' already exists.")
+        else:
+            self.address_books[book_name] = AddressBook(book_name)
+            logger.info(f"Created new Address Book: {book_name}")
+
+    def get_address_book(self, book_name):
+        """
+        Description:
+            Retrieves an Address Book by its name.
+
+        Parameters:
+            book_name (str): The name of the Address Book to retrieve.
+
+        Returns:
+            AddressBook: The AddressBook object if found, or None if not found.
+        """
+        return self.address_books.get(book_name, None)
 
 
 def input_validation(prompt, current_value, validation_function):
@@ -181,9 +227,8 @@ def input_validation(prompt, current_value, validation_function):
 def main():
     """
     Description:
-        Main function that provides a menu-driven interface for the user to add contacts,
-        edit existing contacts, view all contacts, or exit the program.
-        It also validates user inputs for each field.
+        Main function that provides a menu-driven interface for managing multiple Address Books,
+        adding contacts, editing, deleting, and viewing contacts within selected Address Books.
 
     Parameters:
         None
@@ -191,76 +236,109 @@ def main():
     Returns:
         None
     """
-    address_book = AddressBook()
+    address_book_system = AddressBookSystem()
 
     while True:
-        logger.info("\n1. Add Contact\n2. Edit Contact\n3. View Contacts\n4. Delete Contact\n5. Exit")
-        choice = input("Enter your choice Between (1 - 5) : ")
+        print("***************************************************************")
+        print("                     Address Book System                       ")
+        print("***************************************************************")
+
+        logger.info("\n1. Create Address Book\n2. Select Address Book\n3. Exit")
+        choice = input("Enter your choice (1 - 3): ")
 
         if choice == "1":
-            first_name = input("Enter First Name: ")
-            if not validate_first_name(first_name):
-                logger.warning(f"Invalid First Name entered: {first_name}")
-                continue
-
-            last_name = input("Enter Last Name: ")
-            if not validate_last_name(last_name):
-                logger.warning(f"Invalid Last Name entered: {last_name}")
-                continue
-
-            address = input("Enter Address: ")
-            if not validate_address(address):
-                logger.warning(f"Invalid Address entered: {address}")
-                continue
-
-            city = input("Enter City: ")
-            if not validate_city(city):
-                logger.warning(f"Invalid City entered: {city}")
-                continue
-
-            state = input("Enter State: ")
-            if not validate_state(state):
-                logger.warning(f"Invalid State entered: {state}")
-                continue
-
-            zip_code = input("Enter ZIP Code: ")
-            if not validate_zip_code(zip_code):
-                logger.warning(f"Invalid ZIP Code entered: {zip_code}")
-                continue
-
-            phone_number = input("Enter Phone Number: ")
-            if not validate_phone_number(phone_number):
-                logger.warning(f"Invalid Phone Number entered: {phone_number}")
-                continue
-
-            email = input("Enter Email: ")
-            if not validate_email(email):
-                logger.warning(f"Invalid Email entered: {email}")
-                continue
-
-            contact = Contact(first_name, last_name, address, city, state, zip_code, phone_number, email)
-            address_book.add_contact(contact)
+            book_name = input("Enter the name for the new Address Book: ")
+            address_book_system.add_address_book(book_name)
 
         elif choice == "2":
-            first_name = input("Enter First Name of the contact to edit: ")
-            last_name = input("Enter Last Name of the contact to edit: ")
-            address_book.edit_contact_by_name(first_name, last_name)
+            if not address_book_system.address_books:
+                logger.info("No Address Books available to select.")
+                print("No Address Books available. Please create one first.")
+            else:
+                print("\nAvailable Address Books:")
+                logger.info("Showing available Address Books.")
+                
+                for book_name in address_book_system.address_books:
+                    print(f"- {book_name}")
+                
+                book_name = input("Enter the name of the Address Book to select: ")
+                selected_book = address_book_system.get_address_book(book_name)
+
+                if selected_book:
+                    while True:
+                        logger.info(f"\nAddress Book: {book_name}\n1. Add Contact\n2. Edit Contact\n3. View Contacts\n4. Delete Contact\n5. Go Back")
+                        sub_choice = input("Enter your choice (1 - 5): ")
+
+                        if sub_choice == "1":
+                            first_name = input("Enter First Name: ")
+                            if not validate_first_name(first_name):
+                                logger.warning(f"Invalid First Name entered: {first_name}")
+                                continue
+
+                            last_name = input("Enter Last Name: ")
+                            if not validate_last_name(last_name):
+                                logger.warning(f"Invalid Last Name entered: {last_name}")
+                                continue
+
+                            address = input("Enter Address: ")
+                            if not validate_address(address):
+                                logger.warning(f"Invalid Address entered: {address}")
+                                continue
+
+                            city = input("Enter City: ")
+                            if not validate_city(city):
+                                logger.warning(f"Invalid City entered: {city}")
+                                continue
+
+                            state = input("Enter State: ")
+                            if not validate_state(state):
+                                logger.warning(f"Invalid State entered: {state}")
+                                continue
+
+                            zip_code = input("Enter ZIP Code: ")
+                            if not validate_zip_code(zip_code):
+                                logger.warning(f"Invalid ZIP Code entered: {zip_code}")
+                                continue
+
+                            phone_number = input("Enter Phone Number: ")
+                            if not validate_phone_number(phone_number):
+                                logger.warning(f"Invalid Phone Number entered: {phone_number}")
+                                continue
+
+                            email = input("Enter Email: ")
+                            if not validate_email(email):
+                                logger.warning(f"Invalid Email entered: {email}")
+                                continue
+
+                            new_contact = Contact(first_name, last_name, address, city, state, zip_code, phone_number, email)
+                            selected_book.add_contact(new_contact)
+
+                        elif sub_choice == "2":
+                            first_name = input("Enter First Name of the Contact to Edit: ")
+                            last_name = input("Enter Last Name of the Contact to Edit: ")
+                            selected_book.edit_contact_by_name(first_name, last_name)
+
+                        elif sub_choice == "3":
+                            selected_book.view_contacts()
+
+                        elif sub_choice == "4":
+                            first_name = input("Enter First Name of the Contact to Delete: ")
+                            last_name = input("Enter Last Name of the Contact to Delete: ")
+                            selected_book.delete_contact_by_name(first_name, last_name)
+
+                        elif sub_choice == "5":
+                            break
+                        else:
+                            logger.warning(f"Invalid choice entered: {sub_choice}")
+                else:
+                    logger.error(f"No Address Book found with the name: {book_name}")
+                    print(f"No Address Book found with the name: {book_name}")
 
         elif choice == "3":
-            address_book.view_contacts()
-             
-        elif choice == "4":
-            first_name = input("Enter First Name of the contact to delete: ")
-            last_name = input("Enter Last Name of the contact to delete: ")            
-            address_book.delete_contact_by_name(first_name,last_name)
-
-        elif choice == "5":
-            logger.info("Program exited by the user")
+            logger.info("Exiting the Address Book System.")
             break
 
         else:
-            logger.error(f"Invalid choice entered: {choice}")
-
-
+            logger.warning(f"Invalid choice entered: {choice}")
 if __name__ == "__main__":
     main()
