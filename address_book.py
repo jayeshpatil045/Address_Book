@@ -320,6 +320,7 @@ def main():
 
                 if selected_book:
                     while True:
+                        print("----------------------------------------------------------------")
                         logger.info(f"\nAddress Book: {book_name}\n1. Add Contact\n2. Edit Contact\n3. View Contacts\n4. Delete Contact\n5. Go Back")
                         sub_choice = input("Enter your choice (1 - 5): ")
 
