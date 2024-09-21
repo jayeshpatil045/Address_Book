@@ -222,6 +222,36 @@ class AddressBookSystem:
         """
         return self.address_books.get(book_name, None)
 
+    def search_person_by_city_or_state(self, location, search_type='city'):
+        """
+        Description:
+            Searches for a person by city or state across all address books in the system.
+
+        Parameters:
+            location (str): The city or state to search for.
+            search_type (str): The type of search ('city' or 'state'). Defaults to 'city'.
+
+        Returns:
+            None
+        """
+        found = False
+        logger.info(f"Searching for persons in {search_type.title()}: {location}")
+        print(f"Searching for persons in {search_type.title()}: {location}")
+
+        for book_name, address_book in self.address_books.items():
+            print(f"\nSearching in Address Book: {book_name}")
+            for contact in address_book.contacts:
+                if (search_type == 'city' and contact.city == location) or \
+                   (search_type == 'state' and contact.state == location):
+                    print(contact)
+                    logger.info(f"Found contact in {book_name}: {contact.first_name} {contact.last_name}")
+                    found = True
+
+        if not found:
+            print(f"No contacts found in {search_type.title()} '{location}'.")
+            logger.info(f"No contacts found in {search_type.title()} '{location}'.")
+
+
 
 def input_validation(prompt, current_value, validation_function):
     """
@@ -267,8 +297,8 @@ def main():
         print("                     Address Book System                       ")
         print("***************************************************************")
 
-        logger.info("\n1. Create Address Book\n2. Select Address Book\n3. Exit")
-        choice = input("Enter your choice (1 - 3): ")
+        logger.info("\n1. Create Address Book\n2. Select Address Book\n3. Search Person by City\n4. Search Person by State\n5. Exit")
+        choice = input("Enter your choice (1 - 5): ")
 
         if choice == "1":
             book_name = input("Enter the name for the new Address Book: ")
@@ -296,12 +326,12 @@ def main():
                         if sub_choice == "1":
                             first_name = input("Enter First Name: ")
                             if not validate_first_name(first_name):
-                                logger.warning(f"Invalid First Name entered: {first_name}")
+                                logger.warning(f"Invalid First Name entered: {first_name}  Uppercase letter and is at least 3 characters")
                                 continue
 
                             last_name = input("Enter Last Name: ")
                             if not validate_last_name(last_name):
-                                logger.warning(f"Invalid Last Name entered: {last_name}")
+                                logger.warning(f"Invalid Last Name entered: {last_name}  uppercase letter and is at least 3 characters")
                                 continue
 
                             address = input("Enter Address: ")
@@ -321,17 +351,17 @@ def main():
 
                             zip_code = input("Enter ZIP Code: ")
                             if not validate_zip_code(zip_code):
-                                logger.warning(f"Invalid ZIP Code entered: {zip_code}")
+                                logger.warning(f"Invalid ZIP Code entered: {zip_code} Ensure it consists of exactly 6 digits.")
                                 continue
 
                             phone_number = input("Enter Phone Number: ")
                             if not validate_phone_number(phone_number):
-                                logger.warning(f"Invalid Phone Number entered: {phone_number}")
+                                logger.warning(f"Invalid Phone Number entered: {phone_number} It starts with a 2-digit country code, followed by a space, and then a 10-digit number")
                                 continue
 
                             email = input("Enter Email: ")
                             if not validate_email(email):
-                                logger.warning(f"Invalid Email entered: {email}")
+                                logger.warning(f"Invalid Email entered: {email} It follows a standard email format (e.g., user@domain.com)")
                                 continue
 
                             new_contact = Contact(first_name, last_name, address, city, state, zip_code, phone_number, email)
@@ -356,13 +386,18 @@ def main():
                             logger.warning(f"Invalid choice entered: {sub_choice}")
                 else:
                     logger.error(f"No Address Book found with the name: {book_name}")
-                    print(f"No Address Book found with the name: {book_name}")
 
         elif choice == "3":
-            logger.info("Exiting the Address Book System.")
-            break
+            location = input("Enter the City to search: ")
+            address_book_system.search_person_by_city_or_state(location, search_type='city')
 
-        else:
-            logger.warning(f"Invalid choice entered: {choice}")
+        elif choice == "4":
+            location = input("Enter the State to search: ")
+            address_book_system.search_person_by_city_or_state(location, search_type='state')
+
+        elif choice == "5":
+            logger.info("Exiting the program.")
+            print("Goodbye!")
+            break
 if __name__ == "__main__":
     main()
