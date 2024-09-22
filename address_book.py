@@ -250,6 +250,35 @@ class AddressBookSystem:
         if not found:
             print(f"No contacts found in {search_type.title()} '{location}'.")
             logger.info(f"No contacts found in {search_type.title()} '{location}'.")
+    def count_person_by_city_or_state(self, location, search_type='city'):
+        """
+        Description:
+            Counts the number of persons by city or state across all address books in the system.
+
+        Parameters:
+            location (str): The city or state to count for.
+            search_type (str): The type of search ('city' or 'state'). Defaults to 'city'.
+
+        Returns:
+            None
+        """
+        count = 0
+        logger.info(f"Counting persons in {search_type.title()}: {location}")
+        print(f"Counting persons in {search_type.title()}: {location}")
+
+        for book_name, address_book in self.address_books.items():
+            for contact in address_book.contacts:
+                if (search_type == 'city' and contact.city == location) or \
+                   (search_type == 'state' and contact.state == location):
+                    count += 1
+
+        if count > 0:
+            print(f"Total number of contacts in {search_type.title()} '{location}': {count}")
+            logger.info(f"Total contacts found in {search_type.title()} '{location}': {count}")
+        else:
+            print(f"No contacts found in {search_type.title()} '{location}'.")
+            logger.info(f"No contacts found in {search_type.title()} '{location}'.")
+    
 
 
 
@@ -297,8 +326,8 @@ def main():
         print("                     Address Book System                       ")
         print("***************************************************************")
 
-        logger.info("\n1. Create Address Book\n2. Select Address Book\n3. Search Person by City\n4. Search Person by State\n5. Exit")
-        choice = input("Enter your choice (1 - 5): ")
+        logger.info("\n1. Create Address Book\n2. Select Address Book\n3. Search Person by City\n4. Search Person by State\n5. Count Persons by City\n6. Count Persons by State\n7. Exit")
+        choice = input("Enter your choice (1 - 7): ")
 
         if choice == "1":
             book_name = input("Enter the name for the new Address Book: ")
@@ -320,7 +349,6 @@ def main():
 
                 if selected_book:
                     while True:
-                        print("----------------------------------------------------------------")
                         logger.info(f"\nAddress Book: {book_name}\n1. Add Contact\n2. Edit Contact\n3. View Contacts\n4. Delete Contact\n5. Go Back")
                         sub_choice = input("Enter your choice (1 - 5): ")
 
@@ -396,7 +424,16 @@ def main():
             location = input("Enter the State to search: ")
             address_book_system.search_person_by_city_or_state(location, search_type='state')
 
+
         elif choice == "5":
+            location = input("Enter the City to count: ")
+            address_book_system.count_person_by_city_or_state(location, search_type='city')
+
+        elif choice == "6":
+            location = input("Enter the State to count: ")
+            address_book_system.count_person_by_city_or_state(location, search_type='state')
+
+        elif choice == "7":
             logger.info("Exiting the program.")
             print("Goodbye!")
             break
