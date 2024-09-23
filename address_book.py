@@ -175,10 +175,11 @@ class AddressBook:
             for contact in self.contacts:
                 print(contact)
                 logger.info(f"Displayed contact: {contact.first_name} {contact.last_name} from Address Book: {self.name}")
-    def sort_contacts_by_name(self):
+
+    def sort_contacts(self, by="name"):
         """
         Description:
-            Sorts the contacts alphabetically by first name.
+            Sorts the contacts by a specified attribute: 'name', 'city', 'state', or 'zip'.
         Parameters:
             None
 
@@ -189,10 +190,23 @@ class AddressBook:
             print(f"No contacts available in Address Book: {self.name} to sort.")
             logger.info(f"No contacts available in Address Book: {self.name} to sort.")
         else:
-            self.contacts.sort(key=lambda contact: (contact.first_name, contact.last_name))
-            logger.info(f"Sorted contacts alphabetically in Address Book: {self.name}")
-            print(f"Contacts in Address Book: {self.name} have been sorted alphabetically by name.")            
+            if by == "name":
+                self.contacts.sort(key=lambda contact: (contact.first_name, contact.last_name))
+                logger.info(f"Sorted contacts by name in Address Book: {self.name}")
+            elif by == "city":
+                self.contacts.sort(key=lambda contact: contact.city)
+                logger.info(f"Sorted contacts by city in Address Book: {self.name}")
+            elif by == "state":
+                self.contacts.sort(key=lambda contact: contact.state)
+                logger.info(f"Sorted contacts by state in Address Book: {self.name}")
+            elif by == "zip":
+                self.contacts.sort(key=lambda contact: contact.zip_code)
+                logger.info(f"Sorted contacts by ZIP code in Address Book: {self.name}")
+            else:
+                print("Invalid sort option.")
+                return
 
+            print(f"Contacts in Address Book: {self.name} have been sorted by {by}.")
 
 class AddressBookSystem:
     def __init__(self):
@@ -366,7 +380,7 @@ def main():
 
                 if selected_book:
                     while True:
-                        logger.info(f"\nAddress Book: {book_name}\n1. Add Contact\n2. Edit Contact\n3. View Contacts\n4. Delete Contact\n5. Sort Contacts by Name \n6. Go Back")
+                        logger.info(f"\nAddress Book: {book_name}\n1. Add Contact\n2. Edit Contact\n3. View Contacts\n4. Delete Contact\n5. Sort Contacts  \n6. Go Back")
                         sub_choice = input("Enter your choice (1 - 6): ")
 
                         if sub_choice == "1":
@@ -427,7 +441,23 @@ def main():
                             selected_book.delete_contact_by_name(first_name, last_name)
 
                         elif sub_choice == "5":
-                            selected_book.sort_contacts_by_name()
+                            while True:
+                                print("\nSort Contacts Menu:\n1. Sort by Name\n2. Sort by City\n3. Sort by State\n4. Sort by ZIP Code\n5. Go Back")
+                                sort_choice = input("Enter your choice (1 - 5): ")
+
+                                if sort_choice == "1":
+                                    selected_book.sort_contacts(by="name")
+                                elif sort_choice == "2":
+                                    selected_book.sort_contacts(by="city")
+                                elif sort_choice == "3":
+                                    selected_book.sort_contacts(by="state")
+                                elif sort_choice == "4":
+                                    selected_book.sort_contacts(by="zip")
+                                elif sort_choice == "5":
+                                    break  
+                                else:
+                                    print("Invalid choice.")
+                                    logger.warning(f"Invalid sort choice entered: {sort_choice}")
 
                         elif sub_choice == "6":
                             break
