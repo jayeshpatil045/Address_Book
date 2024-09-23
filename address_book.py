@@ -175,6 +175,23 @@ class AddressBook:
             for contact in self.contacts:
                 print(contact)
                 logger.info(f"Displayed contact: {contact.first_name} {contact.last_name} from Address Book: {self.name}")
+    def sort_contacts_by_name(self):
+        """
+        Description:
+            Sorts the contacts alphabetically by first name.
+        Parameters:
+            None
+
+        Returns:
+            None    
+        """
+        if not self.contacts:
+            print(f"No contacts available in Address Book: {self.name} to sort.")
+            logger.info(f"No contacts available in Address Book: {self.name} to sort.")
+        else:
+            self.contacts.sort(key=lambda contact: (contact.first_name, contact.last_name))
+            logger.info(f"Sorted contacts alphabetically in Address Book: {self.name}")
+            print(f"Contacts in Address Book: {self.name} have been sorted alphabetically by name.")            
 
 
 class AddressBookSystem:
@@ -349,8 +366,8 @@ def main():
 
                 if selected_book:
                     while True:
-                        logger.info(f"\nAddress Book: {book_name}\n1. Add Contact\n2. Edit Contact\n3. View Contacts\n4. Delete Contact\n5. Go Back")
-                        sub_choice = input("Enter your choice (1 - 5): ")
+                        logger.info(f"\nAddress Book: {book_name}\n1. Add Contact\n2. Edit Contact\n3. View Contacts\n4. Delete Contact\n5. Sort Contacts by Name \n6. Go Back")
+                        sub_choice = input("Enter your choice (1 - 6): ")
 
                         if sub_choice == "1":
                             first_name = input("Enter First Name: ")
@@ -410,6 +427,9 @@ def main():
                             selected_book.delete_contact_by_name(first_name, last_name)
 
                         elif sub_choice == "5":
+                            selected_book.sort_contacts_by_name()
+
+                        elif sub_choice == "6":
                             break
                         else:
                             logger.warning(f"Invalid choice entered: {sub_choice}")
