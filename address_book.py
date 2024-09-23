@@ -4,7 +4,7 @@
 @Last Modified by: Jayesh Patil
 @Title: Address Book Problem 
 '''
-
+import os
 import logger
 from regex_validation import *
 
@@ -208,6 +208,25 @@ class AddressBook:
 
             print(f"Contacts in Address Book: {self.name} have been sorted by {by}.")
 
+    def load_contacts(self, filename):
+        """Load contacts from a text file."""
+        if os.path.exists(filename):
+            with open(filename, 'r') as file:
+                for line in file:
+                    first_name, last_name, address, city, state, zip_code, phone_number, email = line.strip().split(',')
+                    contact = Contact(first_name, last_name, address, city, state, zip_code, phone_number, email)
+                    self.contacts.append(contact)
+            logger.info(f"Loaded {len(self.contacts)} contacts from {filename}.")
+        else:
+            logger.warning(f"File {filename} does not exist.")
+
+    def save_contacts(self, filename):
+        """Save contacts to a text file."""
+        with open(filename, 'w') as file:
+            for contact in self.contacts:
+                file.write(str(contact))
+        logger.info(f"Saved {len(self.contacts)} contacts to {filename}.")        
+
 class AddressBookSystem:
     def __init__(self):
         """
@@ -380,7 +399,7 @@ def main():
 
                 if selected_book:
                     while True:
-                        logger.info(f"\nAddress Book: {book_name}\n1. Add Contact\n2. Edit Contact\n3. View Contacts\n4. Delete Contact\n5. Sort Contacts  \n6. Go Back")
+                        logger.info(f"\nAddress Book: {book_name}\n1. Add Contact\n2. Edit Contact\n3. View Contacts\n4. Delete Contact\n5. Sort Contacts \n6. Manage File \n7. Go Back")
                         sub_choice = input("Enter your choice (1 - 6): ")
 
                         if sub_choice == "1":
@@ -458,8 +477,26 @@ def main():
                                 else:
                                     print("Invalid choice.")
                                     logger.warning(f"Invalid sort choice entered: {sort_choice}")
+                        elif sub_choice == "6":  
+                            while True:
+                                print("\nManage File Menu:\n1. Load Contacts\n2. Save Contacts\n3. Go Back")
+                                file_choice = input("Enter your choice (1 - 3): ")
 
-                        elif sub_choice == "6":
+                                if file_choice == "1":
+                                    filename = input("Enter the filename to load contacts from: ")
+                                    selected_book.load_contacts(filename)
+
+                                elif file_choice == "2":
+                                    filename = input("Enter the filename to save contacts to: ")
+                                    selected_book.save_contacts(filename)
+
+                                elif file_choice == "3":
+                                    break
+                                else:
+                                    print("Invalid choice.")
+                                    logger.warning(f"Invalid file choice entered: {file_choice}")            
+
+                        elif sub_choice == "7":
                             break
                         else:
                             logger.warning(f"Invalid choice entered: {sub_choice}")
