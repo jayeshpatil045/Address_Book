@@ -6,6 +6,7 @@
 '''
 import os
 import logger
+import json
 from regex_validation import *
 
 logger = logger.logger_init('Address Book Probelm')
@@ -259,6 +260,16 @@ class AddressBook:
                                f"{contact.city},{contact.state},{contact.zip_code},{contact.phone_number},"
                                f"{contact.email}\n")
             logger.info(f"Saved {len(self.contacts)} contacts to {filename}.")
+
+        elif file_format == "json":
+            if not filename.endswith(".json"):
+                filename += ".json"
+            mode = 'a' if os.path.exists(filename) else 'w'
+
+            with open(filename, mode) as file:
+                contacts_dict = [contact.to_dict() for contact in self.contacts]
+                json.dump(contacts_dict, file, indent=4)
+            logger.info(f"Saved {len(self.contacts)} contacts to {filename} in JSON format.")    
        
 
 class AddressBookSystem:
@@ -521,14 +532,17 @@ def main():
                                     selected_book.load_contacts(filename)
 
                                 elif file_choice == "2":
-                                    print("\n File Save Menu:\n1. Save as txt\n2. Save as csv\n3. Go Back ")
-                                    file_type = input("Enter the file save type(1-3)")
+                                    print("\n File Save Menu:\n1. Save as txt\n2. Save as csv\n3. Save as json\n4. Go Back ")
+                                    file_type = input("Enter the file save type(1-4)")
                                     if file_type == "1":
                                         filename = input("Enter the filename to save contacts to: ")
                                         selected_book.save_contacts(filename,"txt")
                                     elif file_type == "2":
                                         filename = input("Enter the filename to save contacts to: ")
                                         selected_book.save_contacts(filename,"csv")
+                                    elif file_type == "3":
+                                        filename = input("Enter the filename to save contacts to: ")
+                                        selected_book.save_contacts(filename,"json")    
                                     else:
                                         break       
                                          
