@@ -49,9 +49,9 @@ class Contact:
         Returns:
             str: A formatted string that contains the contact's details.
         """
-        return (f"Name: {self.first_name} {self.last_name}\n"
-                f"Address: {self.address}, {self.city}, {self.state} {self.zip_code}\n"
-                f"Phone: {self.phone_number}\nEmail: {self.email}\n")
+        
+        return(f"{self.first_name},{self.last_name},{self.address},{self.city},{self.state},"
+               f"{self.zip_code},{self.phone_number},{self.email}\n")
 
 
 class AddressBook:
@@ -209,7 +209,15 @@ class AddressBook:
             print(f"Contacts in Address Book: {self.name} have been sorted by {by}.")
 
     def load_contacts(self, filename):
-        """Load contacts from a text file."""
+        """
+        Description:
+            Load contacts from a text file.
+        Parameters:
+            None
+
+        Returns:
+            None     
+        """
         if os.path.exists(filename):
             with open(filename, 'r') as file:
                 for line in file:
@@ -221,11 +229,29 @@ class AddressBook:
             logger.warning(f"File {filename} does not exist.")
 
     def save_contacts(self, filename):
-        """Save contacts to a text file."""
-        with open(filename, 'w') as file:
-            for contact in self.contacts:
-                file.write(str(contact))
-        logger.info(f"Saved {len(self.contacts)} contacts to {filename}.")        
+        """
+        Description:
+            save contacts as text file.
+        Parameters:
+            None
+
+        Returns:
+            None     
+        """
+        if not filename.endswith(".txt"):  
+            filename += ".txt"
+
+        if os.path.exists(filename):
+            with open(filename, 'a') as file:  
+                for contact in self.contacts:
+                    file.write(str(contact))
+            logger.info(f"Appended {len(self.contacts)} contacts to {filename}.")
+        else:
+            with open(filename, 'w') as file:  
+                for contact in self.contacts:
+                    file.write(str(contact))
+            logger.info(f"Saved {len(self.contacts)} contacts to {filename}.")
+       
 
 class AddressBookSystem:
     def __init__(self):
