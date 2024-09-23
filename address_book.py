@@ -228,7 +228,7 @@ class AddressBook:
         else:
             logger.warning(f"File {filename} does not exist.")
 
-    def save_contacts(self, filename):
+    def save_contacts(self, filename,file_format):
         """
         Description:
             save contacts as text file.
@@ -238,18 +238,26 @@ class AddressBook:
         Returns:
             None     
         """
-        if not filename.endswith(".txt"):  
-            filename += ".txt"
+        if file_format == "txt":
+            if not filename.endswith(".txt"):
+                filename += ".txt"
+            mode = 'a' if os.path.exists(filename) else 'w'
+            with open(filename, mode) as file:
+                for contact in self.contacts:
+                    file.write(str(contact))
+            logger.info(f"Saved {len(self.contacts)} contacts to {filename}.")
 
-        if os.path.exists(filename):
-            with open(filename, 'a') as file:  
+        elif file_format == "csv":
+            if not filename.endswith(".csv"):
+                filename += ".csv"
+            mode = 'a' if os.path.exists(filename) else 'w'
+            with open(filename, mode) as file:
+                if mode == 'w':  
+                    file.write("First Name,Last Name,Address,City,State,Zip Code,Phone Number,Email\n")
                 for contact in self.contacts:
-                    file.write(str(contact))
-            logger.info(f"Appended {len(self.contacts)} contacts to {filename}.")
-        else:
-            with open(filename, 'w') as file:  
-                for contact in self.contacts:
-                    file.write(str(contact))
+                    file.write(f"{contact.first_name},{contact.last_name},{contact.address},"
+                               f"{contact.city},{contact.state},{contact.zip_code},{contact.phone_number},"
+                               f"{contact.email}\n")
             logger.info(f"Saved {len(self.contacts)} contacts to {filename}.")
        
 
@@ -513,9 +521,17 @@ def main():
                                     selected_book.load_contacts(filename)
 
                                 elif file_choice == "2":
-                                    filename = input("Enter the filename to save contacts to: ")
-                                    selected_book.save_contacts(filename)
-
+                                    print("\n File Save Menu:\n1. Save as txt\n2. Save as csv\n3. Go Back ")
+                                    file_type = input("Enter the file save type(1-3)")
+                                    if file_type == "1":
+                                        filename = input("Enter the filename to save contacts to: ")
+                                        selected_book.save_contacts(filename,"txt")
+                                    elif file_type == "2":
+                                        filename = input("Enter the filename to save contacts to: ")
+                                        selected_book.save_contacts(filename,"csv")
+                                    else:
+                                        break       
+                                         
                                 elif file_choice == "3":
                                     break
                                 else:
